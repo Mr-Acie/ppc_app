@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function TopBar() {
+export default function TopBar({ profile }) {
   const [time, setTime] = useState("--:--");
 
   useEffect(() => {
@@ -19,11 +19,13 @@ export default function TopBar() {
     return () => clearInterval(interval);
   }, []);
 
+  const firstName = profile?.full_name?.split(" ")[0];
+
   return (
     <div className="top-bar">
       <div>
         <div className="top-bar-logo" style={{ fontFamily: "var(--font-lora), serif" }}>
-          Pampered Companion Care
+          {firstName ? `Hi, ${firstName} 👋` : "Pampered Companion Care"}
         </div>
         <div className="top-bar-sub">Safety &amp; Wellness Companion</div>
       </div>

@@ -1,14 +1,15 @@
 "use client";
 
-const MEDS = [
-  { id: "med1", name: "Lisinopril 10mg", detail: "For blood pressure · Take with water", time: "8:00 AM", defaultChecked: true },
-  { id: "med2", name: "Vitamin D 1000 IU", detail: "Bone health supplement", time: "8:00 AM", defaultChecked: true },
-  { id: "med3", name: "Metformin 500mg", detail: "For blood sugar · Take WITH food", time: "2:00 PM", defaultChecked: false },
-  { id: "med4", name: "Atorvastatin 20mg", detail: "For cholesterol · Take at bedtime", time: "6:00 PM", defaultChecked: false },
-  { id: "med5", name: "Aspirin 81mg", detail: "Low-dose aspirin · Take with food", time: "8:00 PM", defaultChecked: false },
-];
+export default function MedsTab({ medications, takenToday, onToggle }) {
+  if (!medications.length) {
+    return (
+      <div className="tab-panel">
+        <div className="section-header">💊 My Medications</div>
+        <div className="section-sub">No medications have been added yet. Your care coordinator will set these up for you.</div>
+      </div>
+    );
+  }
 
-export default function MedsTab({ checkedMeds, onToggle }) {
   return (
     <div className="tab-panel">
       <div className="section-header">💊 My Medications</div>
@@ -16,8 +17,8 @@ export default function MedsTab({ checkedMeds, onToggle }) {
         Tap each medication when you&apos;ve taken it. Your care team is notified if a dose is missed.
       </div>
       <div className="med-list">
-        {MEDS.map((med) => {
-          const checked = checkedMeds.includes(med.id);
+        {medications.map((med) => {
+          const checked = takenToday.includes(med.id);
           return (
             <div
               key={med.id}
@@ -29,7 +30,7 @@ export default function MedsTab({ checkedMeds, onToggle }) {
                 <div className="med-name">{med.name}</div>
                 <div className="med-detail">{med.detail}</div>
               </div>
-              <div className="med-time">{med.time}</div>
+              <div className="med-time">{med.time_of_day}</div>
             </div>
           );
         })}
@@ -37,5 +38,3 @@ export default function MedsTab({ checkedMeds, onToggle }) {
     </div>
   );
 }
-
-export { MEDS };

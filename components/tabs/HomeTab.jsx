@@ -1,9 +1,15 @@
 "use client";
 
-export default function HomeTab({ onEmergency, medStatus, checkinStatus }) {
-  const { done, total } = medStatus;
-  const medLabel = `${done} of ${total}`;
-  const medClass = `sc-value${done === total ? " ok" : " warn"}`;
+export default function HomeTab({ onEmergency, medications, takenToday, checkinToday, appointments }) {
+  const medDone = takenToday.length;
+  const medTotal = medications.length;
+  const medLabel = medTotal ? `${medDone} of ${medTotal}` : "—";
+  const medClass = `sc-value${medTotal && medDone === medTotal ? " ok" : " warn"}`;
+  const checkinLabel = checkinToday ? "Done" : "Not Yet";
+  const nextVisit = appointments?.[0];
+  const nextVisitLabel = nextVisit
+    ? new Date(nextVisit.appt_date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    : "None";
 
   return (
     <div className="tab-panel">
@@ -25,14 +31,12 @@ export default function HomeTab({ onEmergency, medStatus, checkinStatus }) {
         <div className="status-card">
           <span className="sc-icon">✅</span>
           <div className="sc-label">Check-In</div>
-          <div className={`sc-value${checkinStatus === "Done" ? " ok" : ""}`}>
-            {checkinStatus}
-          </div>
+          <div className={`sc-value${checkinToday ? " ok" : ""}`}>{checkinLabel}</div>
         </div>
         <div className="status-card">
           <span className="sc-icon">📅</span>
           <div className="sc-label">Next Visit</div>
-          <div className="sc-value" style={{ fontSize: "0.85rem" }}>Tomorrow</div>
+          <div className="sc-value" style={{ fontSize: "0.85rem" }}>{nextVisitLabel}</div>
         </div>
         <div className="status-card">
           <span className="sc-icon">🌡️</span>
@@ -41,54 +45,31 @@ export default function HomeTab({ onEmergency, medStatus, checkinStatus }) {
         </div>
       </div>
 
-      <div className="divider-label">Daily Reminders</div>
-      <div className="timeline">
-        <div className="timeline-item">
-          <div className="tl-time">8:00 AM</div>
-          <div className="tl-dot done" />
-          <div className="tl-info">
-            <div className="tl-task">Morning Medication</div>
-            <div className="tl-note">Lisinopril + Vitamin D</div>
-          </div>
-          <div className="tl-badge badge-done">Done ✓</div>
+      <div className="divider-label">Today&apos;s Medications</div>
+      {medications.length ? (
+        <div className="timeline">
+          {medications.map((med) => {
+            const taken = takenToday.includes(med.id);
+            return (
+              <div key={med.id} className="timeline-item">
+                <div className="tl-time">{med.time_of_day}</div>
+                <div className={`tl-dot${taken ? " done" : " upcoming"}`} />
+                <div className="tl-info">
+                  <div className="tl-task">{med.name}</div>
+                  <div className="tl-note">{med.detail}</div>
+                </div>
+                <div className={`tl-badge${taken ? " badge-done" : " badge-upcoming"}`}>
+                  {taken ? "Done ✓" : "Upcoming"}
+                </div>
+              </div>
+            );
+          })}
         </div>
-        <div className="timeline-item">
-          <div className="tl-time">12:00 PM</div>
-          <div className="tl-dot done" />
-          <div className="tl-info">
-            <div className="tl-task">Daily Check-In</div>
-            <div className="tl-note">Notified family you&apos;re well</div>
-          </div>
-          <div className="tl-badge badge-done">Done ✓</div>
+      ) : (
+        <div style={{ padding: "8px 20px 16px", fontSize: "0.85rem", color: "var(--muted)" }}>
+          No medications set up yet.
         </div>
-        <div className="timeline-item">
-          <div className="tl-time">2:00 PM</div>
-          <div className="tl-dot missed" />
-          <div className="tl-info">
-            <div className="tl-task">Afternoon Medication</div>
-            <div className="tl-note">Metformin with food</div>
-          </div>
-          <div className="tl-badge badge-missed">Missed</div>
-        </div>
-        <div className="timeline-item">
-          <div className="tl-time">6:00 PM</div>
-          <div className="tl-dot upcoming" />
-          <div className="tl-info">
-            <div className="tl-task">Evening Medication</div>
-            <div className="tl-note">Atorvastatin with dinner</div>
-          </div>
-          <div className="tl-badge badge-upcoming">Upcoming</div>
-        </div>
-        <div className="timeline-item">
-          <div className="tl-time">8:00 PM</div>
-          <div className="tl-dot upcoming" />
-          <div className="tl-info">
-            <div className="tl-task">Hydration Reminder</div>
-            <div className="tl-note">8 glasses goal — how are you doing?</div>
-          </div>
-          <div className="tl-badge badge-upcoming">Coming Up</div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
