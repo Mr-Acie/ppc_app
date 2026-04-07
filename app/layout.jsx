@@ -17,8 +17,19 @@ export const metadata = {
   title: "Pampered Companion Care — Safety Companion",
   description:
     "Safety & wellness companion app for seniors, powered by Pampered Companion Care.",
-  other: {
-    "apple-mobile-web-app-capable": "yes",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "PCC Companion",
+    startupImage: "/icons/icon-512.png",
+  },
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
+  },
+  formatDetection: {
+    telephone: true,
   },
 };
 
@@ -26,6 +37,7 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  userScalable: false,
   themeColor: "#1A3A5C",
 };
 
